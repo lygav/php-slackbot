@@ -1,12 +1,11 @@
 {
   "name": "lygav/php-slackbot",
-  "description": "description_text",
+  "description": "A simple, easy to use, fully featured PHP package for sending messages to Slack incoming webhook.",
   "minimum-stability": "stable",
-  "license": "proprietary",
+  "license": "MIT",
   "authors": [
     {
-      "name": "author's name",
-      "email": "email@example.com"
+      "name": "Vladi Lyga"
     }
   ],
 
