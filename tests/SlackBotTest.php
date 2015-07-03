@@ -3,8 +3,6 @@
 
 namespace lygav\slackbot\tests;
 
-use lygav\slackbot\Attachment;
-use lygav\slackbot\Mrkdwn;
 use lygav\slackbot\SlackBot;
 use lygav\slackbot\tests\Mocks\MockHandler;
 
@@ -18,50 +16,80 @@ use lygav\slackbot\tests\Mocks\MockHandler;
 class SlackBotTest extends \PHPUnit_Framework_TestCase
 {
 	public $url = "https://hooks.slack.com/services/your/incoming/hook";
+	public $handler;
+	public $slackbot;
 
-    public function testChooseSuppliedHandler()
+	protected function setUp()
 	{
-		$bot = new SlackBot($this->url, array('handler' => new MockHandler()));
-		$bot->attachment(Attachment::fromOptions(array(
-			'fallback' => 'fallback text',
-			'author_name' => 'tester',
-			'color' => 'lightgreen',
-			'title' => 'title',
-			'text' => 'text'
-		)))
-			->toGroup("bot-testing")
-            ->disableMarkdown()
-			->send(array(
-				"username" => "my-test-bot"
-			));
+		$this->handler  = new MockHandler();
+		$this->slackbot = new SlackBot($this->url, array('handler' => $this->handler));
 	}
 
-    /**
-     * @expectedException lygav\slackbot\Exceptions\SlackRequestException
-     */
-    public function testThrowExceptionOnEmptyRequest()
-    {
-        $bot = new SlackBot($this->url);
-        $bot->send();
-    }
+	public function testSupplyCustomHandler()
+	{
+		$handler = new MockHandler();
+		$bot     = new SlackBot($this->url, array('handler' => $handler));
+		$bot->text("some text")
+			->from("my-test-bot")
+			->toGroup("bot-testing")
+			->send();
+		var_export($handler->lastRequest());
+	}
 
-    public function testSendRealMessage()
-    {
-        $bot = new SlackBot($GLOBALS['keepgo_hook_url']);
-        $attachment = Attachment::fromOptions(array(
-            'fallback' => 'fallback bold',
-            'author_name' => 'tester',
-            'color' => 'lightgreen',
-            'title' => 'title',
-            'text' => Mrkdwn::link('http://google.com', 'google').' this _italic_ *boldly* `code`',
-            'pretext' => 'pretext: '.Mrkdwn::referenceUser('lygav').' _italic_ *boldly* ```pre```'
-        ));
-        $attachment->enableMarkdown(array('text'));
-        $bot->text("*bold* `code` _italic_")
-            ->attachment($attachment)
-            ->toGroup("bot-testing")
-            ->send(array(
-                "username" => "markdown-bot"
-            ));
-    }
+	public function testOverrideOptionsOnSend()
+	{
+		$slack = $this->defaultTestBot();
+		$slack->text("some text")->send(array(
+			"username" => "overriden-bot-name"
+		));
+	}
+
+	public function testSendMessageWithSimpleAttachment()
+	{
+		$slack = $this->defaultTestBot();
+		$slack->text("Markdown formatted text with *bold* `code` _italic_")
+			->attach(
+				$slack->buildAttachment("fallback text")
+					->enableMarkdown()
+					->setText("We can have *mrkdwn* `code` _italic_ also in attachments")
+			)
+			->toGroup("bot-testing")
+			->send();
+	}
+
+	public function testCreateCompleteAttachments()
+	{
+		$slack      = $this->defaultTestBot();
+		$attachment = $slack->buildAttachment("fallback text"/* mandatory by slack */)
+			->setPretext("pretext line")
+			->setText("attachment body text")
+			/*
+			  Human web-safe colors automatically
+			  translated into HEX equivalent
+			*/
+			->setColor("lightblue")
+			->setAuthor("tester")
+			->addField("short field", "i'm inline", TRUE)
+			->addField("short field 2", "i'm also inline", TRUE)
+			->setImageUrl("http://my-website.com/path/to/image.jpg");
+
+		$slack->attach($attachment)->send();
+	}
+
+	/**
+	 * @expectedException lygav\slackbot\Exceptions\SlackRequestException
+	 */
+	public function testThrowExceptionOnEmptyRequest()
+	{
+		$bot = new SlackBot($this->url);
+		$bot->send();
+	}
+
+	/**
+	 * @return SlackBot
+	 */
+	public function defaultTestBot()
+	{
+		return $this->slackbot;
+	}
 }

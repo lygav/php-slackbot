@@ -11,7 +11,7 @@
          bootstrap="./tests/bootstrap.php"
         >
     <php>
-        <var name="keepgo_hook_url" value="https://hooks.slack.com/services/your/hook/here"/>
+        <var name="real_hook_url" value="https://hooks.slack.com/services/your/hook/here"/>
     </php>
 
     <testsuites>

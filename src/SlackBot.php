@@ -8,21 +8,22 @@ use lygav\slackbot\Handlers\CurlHandler;
 
 class SlackBot
 {
-    private $webhook_url;
-    private $text;
-    private $options = array('mrkdwn' => true);
-    private $attachments = array();
-    private $handler;
+	private $text;
+	private $handler;
+	private $webhook_url;
+	private $attachments     = array();
+	private $global_options  = array();
+	private $request_options = array();
 
-    function __construct($webhook_url, array $options = array())
-    {
-        $this->webhook_url = $webhook_url;
-        if (isset($options['handler'])) {
-            $this->handler = $options['handler'];
-            unset($options['handler']);
-        }
-	    $this->applyOptions($options);
-    }
+	function __construct($webhook_url, array $options = array())
+	{
+		$this->webhook_url = $webhook_url;
+		if (isset($options['handler'])) {
+			$this->handler = $options['handler'];
+			unset($options['handler']);
+		}
+		$this->global_options = $options;
+	}
 
 	public function text($text)
 	{
@@ -30,78 +31,98 @@ class SlackBot
 		return $this;
 	}
 
-	public function toChannel($name)
+	public function from($name)
 	{
-		$this->setChannel($name);
+		$this->setRequestOption('username', $name);
 		return $this;
 	}
 
-	public function toGroup($name)
-	{
-		$this->setChannel($name);
-		return $this;
-	}
-
-	public function toPerson($name)
-	{
-		$this->setChannel($name, TRUE);
-		return $this;
-	}
-
-	public function attachment(Attachment $attachment)
+	public function attach(Attachment $attachment)
 	{
 		array_push($this->attachments, $attachment);
 		return $this;
 	}
 
-    public function send(array $options = array())
-    {
-		$this->applyOptions($options);
-	    $message = new Message($this->text, $this->options);
-	    if ( ! empty($this->attachments)) {
-		    array_map(array($message, 'attach'), $this->attachments);
-	    }
-        $request = new SlackRequest($this->webhook_url, $message);
-        $this->transfer($request);
-    }
-
-    public function disableMarkdown()
-    {
-        $this->options['mrkdwn'] = FALSE;
-        return $this;
-    }
-
-    public function enableMarkdown()
-    {
-        $this->options['mrkdwn'] = TRUE;
-        return $this;
-    }
-
-    private function transfer(SlackRequest $request)
-    {
-        $result = call_user_func($this->handler(), $request);
-        if ($result !== 'ok') {
-            throw new SlackRequestException($result);
-        } else {
-            return $result;
-        }
-    }
-
-    private function handler()
-    {
-        return $this->handler ? : new CurlHandler();
-    }
-
-	private function setChannel($name, $private = FALSE)
+	public function buildAttachment($fallback_text)
 	{
-		if ($private) {
-			$this->options['channel'] = strpos($name, "@") === 0 ? : "@".$name ;
+		return new Attachment($fallback_text);
+	}
+
+	public function toChannel($name)
+	{
+		$this->setRequestChannel($name);
+		return $this;
+	}
+
+	public function toGroup($name)
+	{
+		$this->setRequestChannel($name);
+		return $this;
+	}
+
+	public function toPerson($name)
+	{
+		$this->setRequestChannel($name, TRUE);
+		return $this;
+	}
+
+	public function send(array $options = array())
+	{
+		$options = array_replace($this->global_options, $this->request_options, $options);
+		$message = new Message($this->text, $options);
+		if ( ! empty($this->attachments)) {
+			array_map(array($message, 'attach'), $this->attachments);
+		}
+		$request = new SlackRequest($this->webhook_url, $message);
+		$this->transfer($request);
+		$this->reset();
+	}
+
+	public function disableMarkdown()
+	{
+		$this->setRequestOption('mrkdwn', FALSE);
+		return $this;
+	}
+
+	public function enableMarkdown()
+	{
+		$this->setRequestOption('mrkdwn', TRUE);
+		return $this;
+	}
+
+	private function transfer(SlackRequest $request)
+	{
+		$result = call_user_func($this->handler(), $request);
+		if ($result !== 'ok') {
+			throw new SlackRequestException($result);
 		} else {
-			$this->options['channel'] = strpos($name, "#") === 0 ? : "#".$name ;
+			return $result;
 		}
 	}
-	private function applyOptions(array $options)
+
+	private function reset()
 	{
-		$this->options = array_replace($this->options, $options);
+		$this->attachments     = array();
+		$this->text            = "";
+		$this->request_options = array();
+	}
+
+	private function handler()
+	{
+		return $this->handler ? : new CurlHandler();
+	}
+
+	private function setRequestChannel($name, $private = FALSE)
+	{
+		if ($private) {
+			$this->setRequestOption('channel', strpos($name, "@") === 0 ? : "@".$name);
+		} else {
+			$this->setRequestOption('channel', strpos($name, "#") === 0 ? : "#".$name);
+		}
+	}
+
+	private function setRequestOption($name, $value)
+	{
+		$this->request_options[$name] = $value;
 	}
 }

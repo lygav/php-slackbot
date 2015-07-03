@@ -7,9 +7,15 @@ use lygav\slackbot\SlackRequest;
 
 class MockHandler implements RequestHandler
 {
+	private $request;
     public function __invoke(SlackRequest $request)
     {
-        var_export($request);
+        $this->request = $request;
         return 'ok';
     }
+
+	public function lastRequest()
+	{
+		return $this->request;
+	}
 }
