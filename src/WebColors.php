@@ -161,7 +161,7 @@ class WebColors
     {
         $color_code = strtoupper((string) $color_code);
         if (FALSE !== ($index = array_search($color_code, self::$color_map))) {
-            return self::$color_map[$index];
+            return $index;
         }
         return FALSE;
     }
