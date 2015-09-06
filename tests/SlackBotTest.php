@@ -33,7 +33,7 @@ class SlackBotTest extends \PHPUnit_Framework_TestCase
 			->from("my-test-bot")
 			->toGroup("bot-testing")
 			->send();
-		var_export($handler->lastRequest());
+        $this->assertInstanceOf("lygav\\slackbot\\SlackRequest", $handler->lastRequest());
 	}
 
 	public function testOverrideOptionsOnSend()

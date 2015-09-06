@@ -2,16 +2,18 @@
 
 namespace lygav\slackbot;
 
-class Mrkdwn 
+class Mrkdwn
 {
-    public static function referenceUser($slackname)
+    public static function userRef($slackname)
     {
-        return sprintf("<%s>", strpos($slackname, "@") === 0 ? : "@".$slackname);
+        $slackname = self::normalize($slackname);
+        return sprintf("<%s>", (strpos($slackname, "@") === 0 ? "" : "@") . $slackname);
     }
 
-    public static function referenceChannel($channel)
+    public static function channelRef($channel)
     {
-        return sprintf("<%s>", strpos($channel, "#") === 0 ? : "#".$channel);
+        $channel = self::normalize($channel);
+        return sprintf("<%s>", (strpos($channel, "#") === 0 ? "" : "#") . $channel);
     }
 
     public static function code($text)
@@ -24,8 +26,16 @@ class Mrkdwn
         return sprintf("```%s```", $text);
     }
 
-    public static function link($url, $alias = NULL)
+    public static function link($url, $alias)
     {
-        return is_null($alias) ? $url : sprintf("<%s|%s>", $url, $alias);
+        $url = self::normalize($url);
+        $alias = self::normalize($alias);
+        return sprintf("<%s|%s>", $url, $alias);
+    }
+
+    private static function normalize($string)
+    {
+        return preg_replace(
+            array("#(^\s|\s$)+#", "#[\r\n\s\s]+#"), array("", " "), $string);
     }
 }
