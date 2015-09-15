@@ -2,7 +2,15 @@
 Simple, easy to use, PHP package for sending messages to Slack.  
 Send pretty, colourful messages with rich attachments quickly with this friendly API.
 
-Compatible with PHP > 5.3
+Compatible with PHP >= 5.3
+
+## Installation
+### Via composer
+```json
+"require": {
+   "lygav/php-slackbot": "0.0.*"
+}
+```
 
 ## Your first message
 ```PHP
