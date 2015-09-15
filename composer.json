@@ -1,6 +1,6 @@
 {
   "name": "lygav/php-slackbot",
-  "description": "A simple, easy to use, fully featured PHP package for sending messages to Slack incoming webhook.",
+  "description": "Simple, easy to use, PHP package for sending messages to Slack. Send pretty, colourful messages with rich attachments quickly with this friendly API",
   "minimum-stability": "stable",
   "license": "MIT",
   "authors": [
@@ -10,6 +10,7 @@
   ],
 
   "require": {
+    "php": ">=5.3"
   },
 
   "require-dev": {
