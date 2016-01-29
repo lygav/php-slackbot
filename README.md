@@ -12,6 +12,18 @@ Compatible with PHP >= 5.3
 }
 ```
 
+### Without composer, via PHAR
+From the command line, enter into the cloned repository dir and run:
+```
+php makephar
+```
+You will see that a new file was created named "phpslackbot.phar".
+Then in your application:
+```php
+include 'path/to/phpslackbot.phar';
+```
+The rest is the same as when installed with 'composer'  
+
 ## Your first message
 ```PHP
 $bot = new Slackbot("https://hooks.slack.com/services/your/incoming/hook");
