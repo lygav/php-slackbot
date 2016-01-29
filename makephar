@@ -1,0 +1,27 @@
+<?php
+
+
+$phar = new Phar('phpslackbot.phar', 0);
+$phar->buildFromDirectory(dirname(__FILE__));
+$stub = '
+<?php
+
+spl_autoload_register(function($class) {
+    $filepath = str_replace("lygav\\slackbot", "src/", $class);
+    $filepath = str_replace("\\\", "/", $filepath);
+    $path = dirname(__FILE__)."/".$filepath.".php";
+    include $path;
+});
+
+__HALT_COMPILER();?>
+';
+
+spl_autoload_register(function($class) {
+    $filepath = str_replace("lygav\\slackbot", "src/", $class);
+    $filepath = str_replace("\\", "/", $filepath);
+    $path = dirname(__FILE__)."/".$filepath.".php";
+    include $path;
+});
+
+
+$phar->setStub($stub);

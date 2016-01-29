@@ -58,4 +58,5 @@ vendor/
 
 
 
+/phpslackbot.phar
 phpunit.local.xml
