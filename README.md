@@ -1,6 +1,10 @@
-# PHP-SlackBot [![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](https://github.com/lygav/php-slackbot/blob/master/LICENCE)
+# PHP-SlackBot [![Packagist](https://img.shields.io/packagist/l/lygav/php-slackbot.svg)](https://packagist.org/packages/lygav/php-slackbot)
 
 [![Build Status](https://travis-ci.org/lygav/php-slackbot.svg?branch=master)](https://travis-ci.org/lygav/php-slackbot)
+[![Scrutinizer](https://img.shields.io/scrutinizer/g/lygav/php-slackbot.svg)]()
+[![Packagist](https://img.shields.io/packagist/dt/lygav/php-slackbot.svg)](https://packagist.org/packages/lygav/php-slackbot)
+[![Packagist Pre Release](https://img.shields.io/packagist/vpre/lygav/php-slackbot.svg)](https://packagist.org/packages/lygav/php-slackbot)
+
 
 
 
