@@ -1,4 +1,9 @@
-# php-slackbot
+# PHP-SlackBot [![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](https://github.com/lygav/php-slackbot/blob/master/LICENCE)
+
+[![Build Status](https://travis-ci.org/lygav/php-slackbot.svg?branch=master)](https://travis-ci.org/lygav/php-slackbot)
+
+
+
 Simple, easy to use, PHP package for sending messages to Slack.  
 Send pretty, colourful messages with rich attachments quickly with this friendly API.
 
