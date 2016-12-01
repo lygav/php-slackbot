@@ -2,10 +2,19 @@
   "name": "lygav/php-slackbot",
   "description": "Simple, easy to use, PHP package for sending messages to Slack. Send pretty, colourful messages with rich attachments quickly with this friendly API",
   "minimum-stability": "stable",
+  "homepage": "https://github.com/lygav/php-slackbot",
+  "keywords": [
+    "slack",
+    "slackbot",
+    "php-slackbot"
+  ],
   "license": "MIT",
+  "type": "library",
   "authors": [
     {
-      "name": "Vladi Lyga"
+      "name": "Vladimir (Vladi) Lyga",
+      "homepage": "https://github.com/lygav",
+      "email": "lyvladi@gmail.com"
     }
   ],
 
